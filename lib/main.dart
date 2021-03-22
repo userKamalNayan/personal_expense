@@ -4,7 +4,6 @@ import 'package:intl/intl.dart';
 import 'package:personal_expense/Model/Transaction.dart';
 import 'package:personal_expense/Widgets/new_transaction.dart';
 import 'package:personal_expense/Widgets/transaction_list.dart';
-import 'package:personal_expense/Widgets/user_transactions.dart';
 
 void main() {
   runApp(MyApp());
@@ -37,6 +36,34 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   //List<Transaction> transactions =
 
+  final List<Transaction> _userTransactions = [
+    new Transaction(
+        id: "tr1", title: "First tr", dateTime: DateTime.now(), amount: 30),
+    new Transaction(
+        id: "tr2", title: "First tr", dateTime: DateTime.now(), amount: 15),
+  ];
+
+  void _addNewTransaction(String txTitle, double txAmount) {
+    final newTx = Transaction(
+        id: DateTime.now().toString(),
+        title: txTitle,
+        dateTime: DateTime.now(),
+        amount: txAmount);
+
+    setState(() {
+      _userTransactions.add(newTx);
+    });
+  }
+
+  void _startAddNewTransaction(BuildContext context) {
+    showModalBottomSheet(
+      context: context,
+      builder: (_) {
+        return  SingleChildScrollView(child: NewTransaction(_addNewTransaction));
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -44,6 +71,12 @@ class _MyHomePageState extends State<MyHomePage> {
         // Here we take the value from the MyHomePage object that was created by
         // the App.build method, and use it to set our appbar title.
         title: Text(widget.title),
+        actions: [
+          IconButton(
+            icon: Icon(Icons.add),
+            onPressed: () => _startAddNewTransaction(context),
+          )
+        ],
       ),
       body: SingleChildScrollView(
         child: Column(
@@ -58,9 +91,14 @@ class _MyHomePageState extends State<MyHomePage> {
                 elevation: 5,
               ),
             ),
-            UserTransactions(),
+            TransactionList(_userTransactions),
           ],
         ),
+      ),
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
+      floatingActionButton: FloatingActionButton(
+        child: Icon(Icons.add),
+        onPressed: () => _startAddNewTransaction(context),
       ),
     );
   }
