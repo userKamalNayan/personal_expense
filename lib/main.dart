@@ -1,7 +1,7 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:personal_expense/Model/Transaction.dart';
+import 'package:personal_expense/Widgets/chart.dart';
 import 'package:personal_expense/Widgets/new_transaction.dart';
 import 'package:personal_expense/Widgets/transaction_list.dart';
 
@@ -14,10 +14,28 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter Demo',
+      title: 'Personal Expense',
       theme: ThemeData(
-        primarySwatch: Colors.blue,
+        primarySwatch: Colors.purple,
+        accentColor: Colors.amberAccent,
+        fontFamily: 'Quicksand',
         visualDensity: VisualDensity.adaptivePlatformDensity,
+        textTheme: ThemeData.light().textTheme.copyWith(
+              headline6: TextStyle(
+                fontFamily: 'OpenSans',
+                fontWeight: FontWeight.bold,
+                fontSize: 18,
+              ),
+            ),
+        appBarTheme: AppBarTheme(
+          textTheme: ThemeData.light().textTheme.copyWith(
+                headline6: TextStyle(
+                  fontFamily: 'OpenSans',
+                  fontWeight: FontWeight.bold,
+                  fontSize: 20,
+                ),
+              ),
+        ),
       ),
       home: MyHomePage(title: 'Personal Expense'),
     );
@@ -37,11 +55,21 @@ class _MyHomePageState extends State<MyHomePage> {
   //List<Transaction> transactions =
 
   final List<Transaction> _userTransactions = [
-    new Transaction(
-        id: "tr1", title: "First tr", dateTime: DateTime.now(), amount: 30),
-    new Transaction(
-        id: "tr2", title: "First tr", dateTime: DateTime.now(), amount: 15),
+    // new Transaction(
+    //     id: DateTime.now().toString(),
+    //     title: "title",
+    //     dateTime: DateTime.now(),
+    //     amount: 100.0),
   ];
+
+  List<Transaction> get _recentTransactions {
+    return _userTransactions.where((tx) {
+      return tx.dateTime.isAfter(DateTime.now().subtract(
+        Duration(days: 7),
+      ));
+    }).toList();
+  }
+
 
   void _addNewTransaction(String txTitle, double txAmount) {
     final newTx = Transaction(
@@ -59,7 +87,7 @@ class _MyHomePageState extends State<MyHomePage> {
     showModalBottomSheet(
       context: context,
       builder: (_) {
-        return  SingleChildScrollView(child: NewTransaction(_addNewTransaction));
+        return SingleChildScrollView(child: NewTransaction(_addNewTransaction));
       },
     );
   }
@@ -82,23 +110,19 @@ class _MyHomePageState extends State<MyHomePage> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            Container(
-              width: double.infinity,
-              child: Card(
-                color: Colors.blue,
-                margin: EdgeInsets.all(10),
-                child: Text("Chart to be made"),
-                elevation: 5,
-              ),
-            ),
+            Chart(_recentTransactions),
+           // Chart(_recentTransactions),
             TransactionList(_userTransactions),
           ],
         ),
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
-      floatingActionButton: FloatingActionButton(
-        child: Icon(Icons.add),
-        onPressed: () => _startAddNewTransaction(context),
+      floatingActionButton: Padding(
+        padding: EdgeInsets.all(14),
+        child: FloatingActionButton(
+          child: Icon(Icons.add),
+          onPressed: () => _startAddNewTransaction(context),
+        ),
       ),
     );
   }

@@ -11,54 +11,77 @@ class TransactionList extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       height: 300,
-      child: ListView.builder(
-        itemBuilder: (context, index) {
-          return Card(
-            child: Row(
+      child: _userTransactions.isEmpty
+          ? Column(
               children: [
+                Text(
+                  'No transactions added yet',
+                  style: Theme.of(context).textTheme.headline6,
+                ),
+                SizedBox(
+                  height: 20,
+                ),
                 Container(
-                  child: Text(
-                    '\$ ${_userTransactions[index].amount.toStringAsFixed(2)}',
-                    style: TextStyle(
-                        fontWeight: FontWeight.bold,
-                        fontSize: 20,
-                        color: Colors.purple),
+                  height: 200,
+                  child: Image.asset(
+                    'assets/images/waiting.png',
+                    fit: BoxFit.cover,
                   ),
-                  margin: EdgeInsets.symmetric(
-                    vertical: 10,
-                    horizontal: 16,
-                  ),
-                  decoration: BoxDecoration(
-                    border: Border.all(
-                      width: 2,
-                      color: Colors.purple,
-                    ),
-                  ),
-                  padding: EdgeInsets.all(10),
-                ),
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      _userTransactions[index].title,
-                      style: TextStyle(
-                        color: Colors.black54,
-                        fontSize: 18,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                    Text(
-                      DateFormat().add_yMMMd().format(_userTransactions[index].dateTime),
-                      style: TextStyle(color: Colors.grey, fontSize: 14),
-                    )
-                  ],
-                ),
+                )
               ],
+            )
+          : ListView.builder(
+              itemBuilder: (context, index) {
+                return Card(
+                  child: Row(
+                    children: [
+                      Container(
+                        child: Text(
+                          '\$ ${_userTransactions[index].amount.toStringAsFixed(2)}',
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 20,
+                            color: Theme.of(context).primaryColor,
+                          ),
+                        ),
+                        margin: EdgeInsets.symmetric(
+                          vertical: 10,
+                          horizontal: 16,
+                        ),
+                        decoration: BoxDecoration(
+                          border: Border.all(
+                            width: 2,
+                            color: Theme.of(context).primaryColor,
+                          ),
+                        ),
+                        padding: EdgeInsets.all(10),
+                      ),
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            _userTransactions[index].title,
+                            style: Theme.of(context).textTheme.headline6,
+                            // style: TextStyle(
+                            //   color: Colors.black54,
+                            //   fontSize: 18,
+                            //   fontWeight: FontWeight.bold,
+                            // ),
+                          ),
+                          Text(
+                            DateFormat()
+                                .add_yMMMd()
+                                .format(_userTransactions[index].dateTime),
+                            style: TextStyle(color: Colors.grey, fontSize: 14),
+                          )
+                        ],
+                      ),
+                    ],
+                  ),
+                );
+              },
+              itemCount: _userTransactions.length,
             ),
-          );
-        },
-        itemCount: _userTransactions.length,
-      ),
     );
   }
 }
