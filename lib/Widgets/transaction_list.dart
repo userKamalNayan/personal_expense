@@ -6,14 +6,14 @@ import 'package:personal_expense/Widgets/chart.dart';
 
 class TransactionList extends StatelessWidget {
   final List<Transaction> _userTransactions;
-final Function _deleteTransaction;
+  final Function _deleteTransaction;
 
-  TransactionList(this._userTransactions,this._deleteTransaction);
+  TransactionList(this._userTransactions, this._deleteTransaction);
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: MediaQuery.of(context).size.height-280,
+      height: MediaQuery.of(context).size.height - 280,
       child: _userTransactions.isEmpty
           ? Column(
               children: [
@@ -51,7 +51,12 @@ final Function _deleteTransaction;
                       ),
                     ),
                     title: Text(
-                      _userTransactions[index].title,
+                      _userTransactions[index]
+                              .title
+                              .substring(0, 1)
+                              .toUpperCase() +
+                          _userTransactions[index].title.substring(
+                              1, _userTransactions[index].title.length),// this is done to make only first letter capital forcibly
                     ),
                     subtitle: Text(
                       DateFormat.yMMMd().format(
@@ -61,7 +66,8 @@ final Function _deleteTransaction;
                     trailing: IconButton(
                       icon: Icon(Icons.delete),
                       color: Theme.of(context).errorColor,
-                      onPressed: ()=> _deleteTransaction(_userTransactions[index].id),
+                      onPressed: () =>
+                          _deleteTransaction(_userTransactions[index].id),
                     ),
                   ),
                 );
