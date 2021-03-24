@@ -15,6 +15,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Personal Expense',
+      debugShowCheckedModeBanner: false,
       theme: ThemeData(
         primarySwatch: Colors.purple,
         accentColor: Colors.amberAccent,
@@ -29,12 +30,14 @@ class MyApp extends StatelessWidget {
             ),
         appBarTheme: AppBarTheme(
           textTheme: ThemeData.light().textTheme.copyWith(
-                headline6: TextStyle(
-                  fontFamily: 'OpenSans',
-                  fontWeight: FontWeight.bold,
-                  fontSize: 20,
-                ),
+              headline6: TextStyle(
+                fontFamily: 'OpenSans',
+                fontWeight: FontWeight.bold,
+                fontSize: 20,
               ),
+              button: TextStyle(
+                color: Colors.white,
+              )),
         ),
       ),
       home: MyHomePage(title: 'Personal Expense'),
@@ -70,16 +73,22 @@ class _MyHomePageState extends State<MyHomePage> {
     }).toList();
   }
 
-
-  void _addNewTransaction(String txTitle, double txAmount) {
+  void _addNewTransaction(
+      String txTitle, double txAmount, DateTime selectedDate) {
     final newTx = Transaction(
         id: DateTime.now().toString(),
         title: txTitle,
-        dateTime: DateTime.now(),
+        dateTime: selectedDate,
         amount: txAmount);
 
     setState(() {
       _userTransactions.add(newTx);
+    });
+  }
+
+  void _deleteTransaction(String id) {
+    setState(() {
+      _userTransactions.removeWhere((element) => element.id == id);
     });
   }
 
@@ -109,10 +118,11 @@ class _MyHomePageState extends State<MyHomePage> {
       body: SingleChildScrollView(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.stretch ,
           children: <Widget>[
             Chart(_recentTransactions),
-           // Chart(_recentTransactions),
-            TransactionList(_userTransactions),
+            // Chart(_recentTransactions),
+            TransactionList(_userTransactions,_deleteTransaction),
           ],
         ),
       ),

@@ -1,16 +1,19 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:personal_expense/Model/Transaction.dart';
+import 'package:personal_expense/Widgets/chart.dart';
 
 class TransactionList extends StatelessWidget {
   final List<Transaction> _userTransactions;
+final Function _deleteTransaction;
 
-  TransactionList(this._userTransactions);
+  TransactionList(this._userTransactions,this._deleteTransaction);
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: 300,
+      height: MediaQuery.of(context).size.height-280,
       child: _userTransactions.isEmpty
           ? Column(
               children: [
@@ -33,50 +36,33 @@ class TransactionList extends StatelessWidget {
           : ListView.builder(
               itemBuilder: (context, index) {
                 return Card(
-                  child: Row(
-                    children: [
-                      Container(
-                        child: Text(
-                          '\$ ${_userTransactions[index].amount.toStringAsFixed(2)}',
-                          style: TextStyle(
-                            fontWeight: FontWeight.bold,
-                            fontSize: 20,
-                            color: Theme.of(context).primaryColor,
+                  elevation: 5,
+                  margin: EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                  child: ListTile(
+                    leading: CircleAvatar(
+                      radius: 30,
+                      child: Padding(
+                        padding: const EdgeInsets.all(6.0),
+                        child: FittedBox(
+                          child: Text(
+                            "\$${_userTransactions[index].amount}",
                           ),
                         ),
-                        margin: EdgeInsets.symmetric(
-                          vertical: 10,
-                          horizontal: 16,
-                        ),
-                        decoration: BoxDecoration(
-                          border: Border.all(
-                            width: 2,
-                            color: Theme.of(context).primaryColor,
-                          ),
-                        ),
-                        padding: EdgeInsets.all(10),
                       ),
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            _userTransactions[index].title,
-                            style: Theme.of(context).textTheme.headline6,
-                            // style: TextStyle(
-                            //   color: Colors.black54,
-                            //   fontSize: 18,
-                            //   fontWeight: FontWeight.bold,
-                            // ),
-                          ),
-                          Text(
-                            DateFormat()
-                                .add_yMMMd()
-                                .format(_userTransactions[index].dateTime),
-                            style: TextStyle(color: Colors.grey, fontSize: 14),
-                          )
-                        ],
+                    ),
+                    title: Text(
+                      _userTransactions[index].title,
+                    ),
+                    subtitle: Text(
+                      DateFormat.yMMMd().format(
+                        _userTransactions[index].dateTime,
                       ),
-                    ],
+                    ),
+                    trailing: IconButton(
+                      icon: Icon(Icons.delete),
+                      color: Theme.of(context).errorColor,
+                      onPressed: ()=> _deleteTransaction(_userTransactions[index].id),
+                    ),
                   ),
                 );
               },
