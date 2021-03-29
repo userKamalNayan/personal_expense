@@ -23,7 +23,7 @@ class _NewTransactionState extends State<NewTransaction> {
       return;
     }
     setState(() {
-      widget.addTransaction(enteredTitle, amount,_selectedDate);
+      widget.addTransaction(enteredTitle, amount, _selectedDate);
     });
     Navigator.of(context).pop();
   }
@@ -38,9 +38,9 @@ class _NewTransactionState extends State<NewTransaction> {
       if (pickedDate == null) {
         return;
       }
-     setState(() {
-       _selectedDate = pickedDate;
-     });
+      setState(() {
+        _selectedDate = pickedDate;
+      });
     });
   }
 
@@ -48,7 +48,12 @@ class _NewTransactionState extends State<NewTransaction> {
   Widget build(BuildContext context) {
     return Card(
       child: Container(
-        margin: EdgeInsets.all(10),
+        margin: EdgeInsets.only(
+          top: 10,
+          left: 10,
+          right: 10,
+          bottom: MediaQuery.of(context).viewInsets.bottom+10
+        ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.end,
           children: [
@@ -71,13 +76,15 @@ class _NewTransactionState extends State<NewTransaction> {
             ),
             Container(
               height: 70,
-              padding: EdgeInsets.fromLTRB(5,4,4,4),
+              padding: EdgeInsets.fromLTRB(5, 4, 4, 4),
               child: Row(children: [
                 Expanded(
                   child: Text(
-                    _selectedDate==null ?'Please Select Date':'Picked Date : ${DateFormat.yMd().format(_selectedDate)}',
-                    style: TextStyle(fontFamily: 'Quicksand',
-                    fontWeight: FontWeight.bold),
+                    _selectedDate == null
+                        ? 'Please Select Date'
+                        : 'Picked Date : ${DateFormat.yMd().format(_selectedDate)}',
+                    style: TextStyle(
+                        fontFamily: 'Quicksand', fontWeight: FontWeight.bold),
                   ),
                 ),
                 Padding(
